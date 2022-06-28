@@ -231,7 +231,7 @@ class POS extends Controller
      *
      * @return void
      */
-    private function holdOrder()
+    protected function holdOrder()
     {
         if (false === $this->validateSaveRequest($this->request)) return;
 
