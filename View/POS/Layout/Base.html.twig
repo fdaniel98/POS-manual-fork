@@ -1,0 +1,68 @@
+{#
+/**
+ *  This file is part of POS plugin for FacturaScripts
+ *  Copyright (C) 2020 Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+ */
+#}
+{% extends 'Master/MicroTemplate.html.twig' %}
+{% block css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('Dinamic/Assets/CSS/atlantis.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('Plugins/POS/Assets/CSS/pos.app.css') }}" />
+{% endblock %}
+{% block fullBody %}
+    {% set terminal = fsc.session.terminal() %}
+    <body class="app">
+        <!-- Header -->
+        {{ include('POS/Layout/Nav.html.twig') }}
+        <!-- End Header -->
+        <!-- Contend -->
+        <main role="main" class="container-fluid app-content">
+            {% block messages %}
+                <div class="position-absolute w-100 d-flex flex-column align-items-start no-gutters" style="bottom: 2rem; z-index: 1000;">
+                    <div class="col-lg-3">
+                        {{ _self.message(log, ['error', 'critical'], 'danger') }}
+                        {{ _self.message(log, ['warning'], 'warning') }}
+                        {{ _self.message(log, ['notice'], 'success') }}
+                        {{ _self.message(log, ['info'], 'info') }}
+                    </div>
+                </div>
+            {% endblock %}
+            <div class="row h-100">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+        <!-- End Contend -->
+
+        {% block modals %}
+        {% endblock %}
+
+        {% block js %}
+            <script>
+                $(document).ready(() => $('.toast').toast('show'));
+            </script>
+        {% endblock %}
+
+{#        {{ debugBarRender.render() | raw }}#}
+    </body>
+{% endblock %}
+
+{% macro message(log, types, style) %}
+    {% set messages = log.readAll(types) %}
+    {% if messages | length > 0 %}
+        <div class="toast mr-auto" role="alert" data-delay="2000">
+            <div class="toast-header text-white bg-{{ style }} border-0">
+                <strong class="mr-auto">{{ style|capitalize }}</strong>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {% for msg in messages %}
+                    <div>{{ msg.message | raw }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}
